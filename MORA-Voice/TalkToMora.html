@@ -1,0 +1,44 @@
+<!-- mora-voice/TalkToMora.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MORA Voice Test</title>
+  </head>
+  <body>
+    <button onclick="talkToMora()">🎙️ Talk to MORA</button>
+
+    <script>
+      function talkToMora() {
+        const msg = new SpeechSynthesisUtterance("Good morning Jacob. How can I help?");
+        msg.voice = speechSynthesis.getVoices().find(v => v.lang === 'en-GB' && v.name.includes("Female"));
+        msg.rate = 1.1;
+        speechSynthesis.speak(msg);
+
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.onresult = function (event) {
+          const transcript = event.results[0][0].transcript.toLowerCase();
+          console.log("👂 You said:", transcript);
+
+          if (transcript.includes("full report")) {
+            speak("Running full report now.");
+            fetch("http://localhost:3000/run-full-report"); // Hook to backend or script trigger
+          } else if (transcript.includes("stem") && transcript.includes("latin america")) {
+            speak("Running Latin America STEM report.");
+            fetch("http://localhost:3000/run-report?region=Latin%20America&store=MORA-STEM");
+          } else {
+            speak("Sorry, I didn't understand.");
+          }
+        };
+        recognition.start();
+
+        function speak(text) {
+          const response = new SpeechSynthesisUtterance(text);
+          response.voice = speechSynthesis.getVoices().find(v => v.lang === 'en-GB' && v.name.includes("Female"));
+          response.rate = 1.1;
+          speechSynthesis.speak(response);
+        }
+      }
+    </script>
+  </body>
+</html>
