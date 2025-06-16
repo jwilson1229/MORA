@@ -1,3 +1,4 @@
+// signalEngine.ts
 import { fetchRedditSignals } from './fetchRedditSignals';
 import { fetchWeatherSignals } from './fetchWeatherSignals';
 import { regionGroups } from './regionGroups';
@@ -5,7 +6,10 @@ import { Signal } from '../types/Signal';
 
 export async function gatherSignals(): Promise<Signal[]> {
   const allCountries = Object.values(regionGroups).flat();
-  const [weatherSignals] = await Promise.all([safeFetchNoArg(fetchWeatherSignals)]);
+  const [weatherSignals] = await Promise.all([
+    safeFetchNoArg(fetchWeatherSignals),
+    // TEMPORARILY DISABLED: safeFetchWithArg(fetchEventRegistrySignals, region)
+  ]);
   const allSignals: Signal[] = [];
 
   for (const country of allCountries) {
@@ -67,4 +71,3 @@ function isSignal(item: any): item is Signal {
     Array.isArray(item.indicators)
   );
 }
-

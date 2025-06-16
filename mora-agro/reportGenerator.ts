@@ -23,15 +23,26 @@ function getStoreNameFromBundle(bundle: Bundle): string {
     problem.includes('drought') ||
     problem.includes('frost') ||
     problem.includes('extreme heat')
-  ) {
+  ) 
     return 'MORA-AGTECH';
-  }
 
-  if (tags.includes('solar') || tags.includes('solar panel')) {
+  if (tags.includes('solar') || tags.includes('solar panel') || tags.includes('off-grid')) {
     return 'MORA-SOLAR';
   }
 
-  return 'MORA-STEM';
+  if (tags.includes('water') || tags.includes('filtration') || tags.includes('pump') || tags.includes('hydration')) {
+    return 'MORA-WATER';
+  }
+
+  if (tags.includes('dx') || tags.includes('diagnostic') || tags.includes('sensor') || tags.includes('monitoring')) {
+    return 'MORA-DX';
+  }
+
+  if (tags.includes('stem') || tags.includes('lab') || tags.includes('education') || tags.includes('science')) {
+    return 'MORA-STEM';
+  }
+
+  return 'MORA-GENERAL';
 }
 
 function formatGroupedBundleMarkdown(bundle: Bundle): string {
@@ -41,6 +52,9 @@ function formatGroupedBundleMarkdown(bundle: Bundle): string {
 
   const regions = Array.isArray(bundle.regions) ? bundle.regions.join(', ') : bundle.regions;
   const sources = Array.isArray(bundle.sourceSignals) ? bundle.sourceSignals.join(', ') : bundle.sourceSignals;
+  const sourceLinks = Array.isArray(bundle.sourceSignals)
+    ? bundle.sourceSignals.filter(s => s.startsWith('http')).join(', ')
+    : '';
 
   return `**📦 ${bundle.name}**
 **🆔 ID:** \`${bundle.id}\`
@@ -54,7 +68,8 @@ ${productList}
 
 💰 **Total Cost:** ${formatCurrency(bundle.totalCostUSD)}
 📈 **Estimated Resale:** ${formatCurrency(bundle.estimatedResale || 0)}
-💸 **Estimated Profit:** ${formatCurrency(bundle.profitUSD)}`
+💸 **Estimated Profit:** ${formatCurrency(bundle.profitUSD)}
+📰 **Sources:** ${sourceLinks || 'N/A'}`;
 }
 
 async function sendTelegramMessage(message: string): Promise<void> {
@@ -122,6 +137,9 @@ export async function generateReport(bundles: Bundle[]) {
     await sendTelegramMessage(fullSection);
   }
 
-  fs.writeFileSync(reportPath, fullReport.join('\n\n---\n\n'));
+  const fullMarkdown = fullReport.join('\n\n---\n\n');
+  fs.writeFileSync(reportPath, fullMarkdown);
+  fs.writeFileSync('mora-report.md', fullMarkdown); // ✅ Write MORA’s readable markdown file
+
   console.log(`📝 MORA Agro report saved: ${reportPath}`);
 }

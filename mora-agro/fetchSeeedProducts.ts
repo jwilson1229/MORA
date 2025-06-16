@@ -165,7 +165,7 @@ export async function fetchSeeedProducts(): Promise<Product[]> {
       name: 'Smart Shade Controller',
       price: 37.5,
       priceUSD: 37.5,
-      quantity: 0,
+      quantity: 25,
       url: 'https://www.seeedstudio.com/Smart-Shade-Controller.html',
       description: 'Automates shading to protect crops from heat',
       tags: ['shade', 'heat', 'climate', 'automation'],

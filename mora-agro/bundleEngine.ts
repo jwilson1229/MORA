@@ -2,6 +2,9 @@ import { Signal } from '../types/Signal';
 import { Bundle } from '../types/Bundle';
 import { fetchSeeedProducts } from '../mora-agro/fetchSeeedProducts';
 import { fetchSolarProducts } from '../mora-agro/fetchSolarProducts';
+import { fetchWaterProducts } from './fetchWaterProducts';
+import { fetchDXproducts } from './fetchDXproducts';
+import { fetchStemProducts } from './fetchStemProducts';
 import { problemSolutionMap } from './problemSolutionsMap';
 import { calculateProfit } from './calculateProfit';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,6 +13,9 @@ export async function generateSmartBundles(signals: Signal[], country: string): 
   const allProducts = {
     ag: await fetchSeeedProducts(),
     solar: await fetchSolarProducts(),
+    water: await fetchWaterProducts(),
+    dx: await fetchDXproducts(),
+    stem: await fetchStemProducts()
   };
 
   const bundles: Bundle[] = [];
@@ -49,7 +55,7 @@ export async function generateSmartBundles(signals: Signal[], country: string): 
         .filter((p): p is NonNullable<typeof p> => !!p);
 
       if (matchedProducts.length !== solution.requiredProductNames.length) {
-        console.log(`⚠️ Not all required products found for "${solution.bundleName}". Needed: ${solution.requiredProductNames.join(', ')}`);
+        console.log(`⚠️ Not all required products found or in stock for "${solution.bundleName}". Needed: ${solution.requiredProductNames.join(', ')}`);
         continue;
       }
 

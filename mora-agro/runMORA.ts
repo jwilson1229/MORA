@@ -4,6 +4,11 @@ import { generateSmartBundles } from './bundleEngine';
 import { generateReport } from './reportGenerator';
 import { Bundle } from '../types/Bundle';
 
+import fs from 'fs';
+import { generateSummary } from '../MORA-Voice/generateSummary';
+import { textToSpeech } from '../MORA-Voice/textToSpeech';
+import { sendVoiceMessage } from '../MORA-Voice/sendVoiceMessage';
+
 console.log('🚜 Starting MORA-Agro Smart Bundle Cycle...');
 
 const regionGroups = [
@@ -47,7 +52,13 @@ const allBundles: Bundle[] = [];
   }
 
   if (allBundles.length > 0) {
-    await generateReport(allBundles); // Send report via Telegram + Markdown file
+    await generateReport(allBundles);
+
+    const markdown = fs.readFileSync('mora-report.md', 'utf8');
+    const summary = generateSummary(markdown);
+    await textToSpeech(summary);
+    await sendVoiceMessage('mora-voice.ogg');
+
   } else {
     console.log('🛑 No viable bundles found. Report skipped.');
   }

@@ -103,10 +103,10 @@ export const problemSolutionMap: ProblemSolutionMap = {
     },
   ],
 
-// MORA-SOLAR BUNDLES
-  'Cloud Risk': [
+  // MORA-SOLAR BUNDLES
+  'cloud risk': [
     { 
-       name: 'Solar Power Bundle',
+      name: 'Solar Power Bundle',
       bundleName: 'Solar Power Bundle',
       description: 'Complete solar power system for off-grid applications.',
       requiredProductNames: [
@@ -114,9 +114,59 @@ export const problemSolutionMap: ProblemSolutionMap = {
         'IoT Solar Controller with WiFi',
         'Solar Panel Mounting Brackets (Adjustable)',
       ],
-       tags: ['solar', 'mounting', 'brackets', 'hardware'],
-      problem: 'Complete solar power system for off-grid applications',
+      tags: ['solar', 'mounting', 'brackets', 'hardware'],
+      problem: 'Cloud coverage reducing solar efficiency',
       store: 'solar',
+    },
+  ],
+
+  // MORA-WATER BUNDLES
+  'water shortage': [
+    {
+      name: 'Water Access Bundle',
+      bundleName: 'Water Access Bundle',
+      description: 'Improves access to clean water with pumps and filtration.',
+      requiredProductNames: [
+        'Portable Water Pump',
+        'Ceramic Water Filter Kit',
+      ],
+      tags: ['water', 'pump', 'filtration'],
+      problem: 'Limited access to potable water in rural regions',
+      store: 'water',
+    },
+  ],
+
+  // MORA-STEM BUNDLES
+  'stem education': [
+    {
+      name: 'Mobile STEM Lab Kit',
+      bundleName: 'Mobile STEM Lab Kit',
+      description: 'All-in-one mobile learning kit for remote STEM education.',
+      requiredProductNames: [
+        'Raspberry Pi Pico with Accessories',
+        'STEM Robotics Kit with Sensors',
+        'Breadboard and Jumper Wire Set',
+      ],
+      tags: ['stem', 'education', 'lab', 'science'],
+      problem: 'Lack of access to practical STEM education resources',
+      store: 'stem',
+    }
+  ],
+
+  // MORA-DX BUNDLES
+  'diagnostics demand': [
+    {
+      name: 'Field Diagnostics Bundle',
+      bundleName: 'Field Diagnostics Bundle',
+      description: 'Portable sensors and kits for diagnostics in remote regions.',
+      requiredProductNames: [
+        'Digital Temperature Probe',
+        'IoT Diagnostic Logger',
+        'Remote Monitoring Starter Kit'
+      ],
+      tags: ['dx', 'sensor', 'monitoring'],
+      problem: 'Need for local diagnostics infrastructure in field settings',
+      store: 'dx',
     },
   ],
 };
