@@ -1,42 +1,52 @@
-// MORA-Voice/textToSpeech.ts
-import * as googleTTS from 'google-tts-api';
-import fs from 'fs';
-import fetch from 'node-fetch';
+import axios from 'axios';
+import dotenv from 'dotenv';
 
-/**
- * Converts text to speech and saves it as an .ogg file for Telegram.
- */
-export async function textToSpeech(text: string, filename = 'mora-voice.ogg'): Promise<string> {
+dotenv.config();
+
+const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY!;
+const VOICE_ID = process.env.MORA_VOICE_ID!;
+
+function cleanSSML(text: string): string {
+  return text
+    .replace(/\$(\d+\.\d{2})/g, (_, amt) => `<say-as interpret-as="cardinal">${amt}</say-as>`)
+    .replace(/\[PAUSE\]/g, '<break time="700ms"/>')
+    .replace(/&/g, 'and'); // fallback: safety from bad SSML input
+}
+
+export async function textToSpeech(text: string): Promise<Buffer> {
+  if (!ELEVENLABS_API_KEY || !VOICE_ID) {
+    throw new Error('Missing ELEVENLABS_API_KEY or MORA_VOICE_ID in .env');
+  }
+
+  const ssml = `<speak>${cleanSSML(text)}</speak>`;
+
   try {
-    // Split into chunks because Google TTS has a 200 character limit
-    const maxLength = 200;
-    const chunks: string[] = [];
-
-    for (let i = 0; i < text.length; i += maxLength) {
-      const chunk = text.slice(i, i + maxLength);
-      const url = googleTTS.getAudioUrl(chunk, {
-        lang: 'en',
-        slow: false,
-        host: 'https://translate.google.com',
-      });
-      chunks.push(url);
-    }
-
-    // Fetch and combine all audio chunks
-    const audioBuffers = await Promise.all(
-      chunks.map(async (url) => {
-        const res = await fetch(url);
-        return res.arrayBuffer();
-      })
+    const response = await axios.post(
+      `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}/stream`,
+      {
+        text: ssml,
+        model_id: 'eleven_multilingual_v2',
+        voice_settings: {
+          stability: 0.5,
+          similarity_boost: 0.8
+        },
+        stream: false,
+        output_format: "mp3_44100_128",
+        optimize_streaming_latency: 1,
+      },
+      {
+        headers: {
+          'xi-api-key': ELEVENLABS_API_KEY,
+          'Content-Type': 'application/json',
+          'Accept': 'audio/mpeg',
+        },
+        responseType: 'arraybuffer',
+      }
     );
 
-    const fullBuffer = Buffer.concat(audioBuffers.map((buf) => Buffer.from(buf)));
-
-    const outputPath = `./${filename}`;
-    fs.writeFileSync(outputPath, fullBuffer);
-    return outputPath;
-  } catch (error) {
-    console.error('❌ Failed to generate speech audio:', error);
-    throw error;
+    return Buffer.from(response.data);
+  } catch (error: any) {
+    const message = error?.response?.data || error.message;
+    throw new Error(`❌ ElevenLabs TTS failed: ${JSON.stringify(message)}`);
   }
 }

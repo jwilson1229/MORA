@@ -37,7 +37,8 @@ const regions: RegionCoord[] = [
   { name: 'UAE', lat: 23.4241, lon: 53.8478 },
 ];
 
-export async function fetchWeatherSignals(): Promise<Signal[]> {
+export async function fetchWeatherSignals(region: string): Promise<Signal[]> {
+
   const signals: Signal[] = [];
 
   await Promise.all(
@@ -104,24 +105,24 @@ export async function fetchWeatherSignals(): Promise<Signal[]> {
 
 function detectWeatherAlerts(data: any): string[] {
   const temps: number[] = data.list?.map((entry: any) => entry.main?.temp).filter((t: any) => typeof t === 'number') || [];
-  const cloudiness: number[] = data.list?.map((entry: any) => entry.clouds?.all).filter((c: any) => typeof c === 'number') || [];
   const windSpeeds: number[] = data.list?.map((entry: any) => entry.wind?.speed).filter((w: any) => typeof w === 'number') || [];
+  const humidity: number[] = data.list?.map((entry: any) => entry.main?.humidity).filter((h: any) => typeof h === 'number') || [];
+  const precip: number[] = data.list?.map((entry: any) => {
+    const rain = entry.rain?.['3h'] || entry.rain || 0;
+    const snow = entry.snow?.['3h'] || entry.snow || 0;
+    return (typeof rain === 'number' ? rain : 0) + (typeof snow === 'number' ? snow : 0);
+  }) || [];
 
   const alerts: string[] = [];
 
-  if (temps.some(temp => temp > 38)) alerts.push('extreme heat risk');
-  if (temps.some(temp => temp < 0)) alerts.push('frost risk');
-  if (Math.max(...temps) - Math.min(...temps) > 25) alerts.push('weather instability');
-
-  // ☁️ Cloudiness harms solar efficiency
-  const avgCloudCover = cloudiness.reduce((a, b) => a + b, 0) / (cloudiness.length || 1);
-  if (avgCloudCover > 75) alerts.push('solar underperformance risk');
-
-  // 💨 Wind threats to panels
+  if (temps.some(temp => temp >= 45)) alerts.push('extreme heat risk');
+  if (temps.some(temp => temp <= -5)) alerts.push('frost risk');
+  if (Math.max(...temps) - Math.min(...temps) >= 30) alerts.push('severe weather fluctuation');
+  if (windSpeeds.some(w => w >= 20)) alerts.push('storm or wind damage risk');
+  if (precip.some(p => p >= 80)) alerts.push('flood risk');
+  if (humidity.some(h => h >= 90) && precip.some(p => p >= 70)) alerts.push('flooding and infrastructure strain');
+  if (temps.some(temp => temp >= 45) && humidity.some(h => h >= 70)) alerts.push('power grid overload risk');
   if (windSpeeds.some(w => w > 14)) alerts.push('storm risk to solar panels');
-
-  // 🔌 Heat-induced blackouts
-  if (temps.some(temp => temp > 40)) alerts.push('power outage risk');
 
   return alerts;
 }

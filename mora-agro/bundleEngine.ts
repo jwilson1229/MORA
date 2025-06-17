@@ -21,8 +21,8 @@ export async function generateSmartBundles(signals: Signal[], country: string): 
   const bundles: Bundle[] = [];
 
   for (const signal of signals) {
-    const { content: rawProblem, region, source } = signal;
-    const normalizedProblem = rawProblem.toLowerCase().trim();
+    const { problem, region, source, url } = signal;
+    const normalizedProblem = problem.toLowerCase().trim();
 
     console.log(`🔍 Checking signal: "${normalizedProblem}"`);
 
@@ -73,6 +73,9 @@ export async function generateSmartBundles(signals: Signal[], country: string): 
         if (!existingBundle.sourceSignals.includes(source)) {
           existingBundle.sourceSignals.push(source);
         }
+        if (url && typeof url === 'string' && !existingBundle.sourceSignals.includes(url)) {
+          existingBundle.sourceSignals.push(url);
+        }
         continue;
       }
 
@@ -88,7 +91,7 @@ export async function generateSmartBundles(signals: Signal[], country: string): 
         regions: [region],
         problem: problemKey,
         items: matchedProducts.length,
-        sourceSignals: [source],
+        sourceSignals: [source, url].filter(Boolean) as string[],
         potentialProfit: profitUSD,
         store: solution.store,
       };

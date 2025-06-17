@@ -1,7 +1,7 @@
 import { ProblemSolutionMap } from '../types/ProblemSolution';
 
 export const problemSolutionMap: ProblemSolutionMap = {
-  humidityspike: [
+  'humidity spike': [
     {
       name: 'Crop Humidity Defense Kit',
       bundleName: 'Crop Humidity Defense Kit',
@@ -15,7 +15,7 @@ export const problemSolutionMap: ProblemSolutionMap = {
       store: 'ag',
     },
   ],
-  drought: [
+  'drought': [
     {
       name: 'Drought Survival Bundle',
       bundleName: 'Drought Survival Bundle',
@@ -30,7 +30,7 @@ export const problemSolutionMap: ProblemSolutionMap = {
       store: 'ag',
     },
   ],
-  frost: [
+  'frost': [
     {
       name: 'Frost Shield Bundle',
       bundleName: 'Frost Shield Bundle',
@@ -60,7 +60,7 @@ export const problemSolutionMap: ProblemSolutionMap = {
       store: 'ag',
     }
   ],
-  pestinfestation: [
+  'pestdamage': [
     {
       name: 'Pest Patrol Kit',
       bundleName: 'Pest Patrol Kit',
@@ -74,7 +74,7 @@ export const problemSolutionMap: ProblemSolutionMap = {
       store: 'ag',
     },
   ],
-  soilacidity: [
+  'soil acidity': [
     {
       name: 'Soil pH Balance Bundle',
       bundleName: 'Soil pH Balance Bundle',
@@ -88,7 +88,7 @@ export const problemSolutionMap: ProblemSolutionMap = {
       store: 'ag',
     },
   ],
-  floodrisk: [
+  'flood risk': [
     {
       name: 'Flood Alert and Drainage Kit',
       bundleName: 'Flood Alert and Drainage Kit',
@@ -104,7 +104,7 @@ export const problemSolutionMap: ProblemSolutionMap = {
   ],
 
   // MORA-SOLAR BUNDLES
-  'cloud risk': [
+  'solarissue': [
     { 
       name: 'Solar Power Bundle',
       bundleName: 'Solar Power Bundle',
@@ -121,7 +121,7 @@ export const problemSolutionMap: ProblemSolutionMap = {
   ],
 
   // MORA-WATER BUNDLES
-  'water shortage': [
+  'watercrisis': [
     {
       name: 'Water Access Bundle',
       bundleName: 'Water Access Bundle',
@@ -137,7 +137,7 @@ export const problemSolutionMap: ProblemSolutionMap = {
   ],
 
   // MORA-STEM BUNDLES
-  'stem education': [
+  'stemshortage': [
     {
       name: 'Mobile STEM Lab Kit',
       bundleName: 'Mobile STEM Lab Kit',
@@ -154,7 +154,7 @@ export const problemSolutionMap: ProblemSolutionMap = {
   ],
 
   // MORA-DX BUNDLES
-  'diagnostics demand': [
+  'diagnosticfailure': [
     {
       name: 'Field Diagnostics Bundle',
       bundleName: 'Field Diagnostics Bundle',

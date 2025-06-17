@@ -55,9 +55,11 @@ const allBundles: Bundle[] = [];
     await generateReport(allBundles);
 
     const markdown = fs.readFileSync('mora-report.md', 'utf8');
-    const summary = generateSummary(markdown);
-    await textToSpeech(summary);
-    await sendVoiceMessage('mora-voice.ogg');
+   const summary = await generateSummary(markdown);
+const audioBuffer = await textToSpeech(summary);
+fs.writeFileSync('mora-voice.ogg', audioBuffer);
+await sendVoiceMessage('mora-voice.ogg');
+
 
   } else {
     console.log('🛑 No viable bundles found. Report skipped.');

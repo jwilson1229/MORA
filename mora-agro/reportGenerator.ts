@@ -22,9 +22,9 @@ function getStoreNameFromBundle(bundle: Bundle): string {
     tags.includes('climate') ||
     problem.includes('drought') ||
     problem.includes('frost') ||
-    problem.includes('extreme heat')
-  ) 
-    return 'MORA-AGTECH';
+    problem.includes('extreme heat') ||
+    problem.includes('pest')
+  ) return 'MORA-AGTECH';
 
   if (tags.includes('solar') || tags.includes('solar panel') || tags.includes('off-grid')) {
     return 'MORA-SOLAR';
@@ -51,9 +51,11 @@ function formatGroupedBundleMarkdown(bundle: Bundle): string {
     .join('\n');
 
   const regions = Array.isArray(bundle.regions) ? bundle.regions.join(', ') : bundle.regions;
-  const sources = Array.isArray(bundle.sourceSignals) ? bundle.sourceSignals.join(', ') : bundle.sourceSignals;
+  const sources = Array.isArray(bundle.sourceSignals) ? bundle.sourceSignals.join(', ') : '';
   const sourceLinks = Array.isArray(bundle.sourceSignals)
-    ? bundle.sourceSignals.filter(s => s.startsWith('http')).join(', ')
+    ? bundle.sourceSignals
+        .filter(s => typeof s === 'string' && s.startsWith('http'))
+        .join(', ')
     : '';
 
   return `**📦 ${bundle.name}**
@@ -139,7 +141,7 @@ export async function generateReport(bundles: Bundle[]) {
 
   const fullMarkdown = fullReport.join('\n\n---\n\n');
   fs.writeFileSync(reportPath, fullMarkdown);
-  fs.writeFileSync('mora-report.md', fullMarkdown); // ✅ Write MORA’s readable markdown file
+  fs.writeFileSync('mora-report.md', fullMarkdown); // ✅ Used by voice engine
 
   console.log(`📝 MORA Agro report saved: ${reportPath}`);
 }
